@@ -1,63 +1,74 @@
-import { createRow, createRows } from '../db'
+import { createRows } from '../db'
 import { CBSE11_SUBJECTS, type SeedSubject } from './cbse11'
 
 /** Installs the editable CBSE seed syllabus into an academic year.
- * Everything created here is ordinary app data: rename, reorder or delete it. */
+ *
+ * Everything created here is ordinary app data: rename, reorder or delete it.
+ * Rows are generated in memory and bulk-written per table — the whole Class 11
+ * syllabus lands in a handful of transactions instead of a thousand. */
 export async function installSyllabus(yearId: string, subjects: SeedSubject[] = CBSE11_SUBJECTS): Promise<void> {
-  let subjectOrder = 0
-  for (const subject of subjects) {
-    const subjectId = await createRow('subjects', {
+  const subjectRows: Array<Record<string, unknown>> = []
+  const chapterRows: Array<Record<string, unknown>> = []
+  const topicRows: Array<Record<string, unknown>> = []
+  const subtopicRows: Array<Record<string, unknown>> = []
+  const componentRows: Array<Record<string, unknown>> = []
+
+  subjects.forEach((subject, subjectIndex) => {
+    const subjectId = crypto.randomUUID()
+    subjectRows.push({
+      id: subjectId,
       yearId,
       name: subject.name,
       description: subject.description,
       color: subject.color,
       icon: subject.icon,
       priority: 'high',
-      order: subjectOrder++,
+      order: subjectIndex,
     })
 
-    let chapterOrder = 0
-    for (const chapter of subject.chapters) {
-      const chapterId = await createRow('chapters', {
+    subject.chapters.forEach((chapter, chapterIndex) => {
+      const chapterId = crypto.randomUUID()
+      chapterRows.push({
+        id: chapterId,
         subjectId,
         name: chapter.name,
         priority: 'medium',
-        order: chapterOrder++,
+        order: chapterIndex,
       })
 
-      const topicRows: Array<{ id: string; name: string; order: number }> = []
-      let topicOrder = 0
-      for (const topic of chapter.topics) {
-        const id = crypto.randomUUID()
-        topicRows.push({ id, name: topic.name, order: topicOrder++ })
-        await createRow('topics', {
-          id,
+      chapter.topics.forEach((topic, topicIndex) => {
+        const topicId = crypto.randomUUID()
+        topicRows.push({
+          id: topicId,
           chapterId,
           name: topic.name,
           priority: 'medium',
           status: 'not_started',
-          order: topicOrder,
+          order: topicIndex,
         })
 
-        if (topic.subtopics?.length) {
-          await createRows(
-            'subtopics',
-            topic.subtopics.map((name, i) => ({
-              topicId: id,
-              name,
-              difficulty: 'medium' as const,
-              completed: false,
-              order: i,
-            })),
-          )
-        }
+        topic.subtopics?.forEach((name, subIndex) => {
+          subtopicRows.push({
+            id: crypto.randomUUID(),
+            topicId,
+            name,
+            difficulty: 'medium',
+            completed: false,
+            order: subIndex,
+          })
+        })
 
-        await createRows(
-          'components',
-          subject.components.map((type) => ({ topicId: id, type, done: false })),
-        )
-      }
-      void topicRows
-    }
-  }
+        subject.components.forEach((type) => {
+          componentRows.push({ id: crypto.randomUUID(), topicId, type, done: false })
+        })
+      })
+    })
+  })
+
+  // createRows stamps ownership and timestamps; ids above are preserved.
+  await createRows('subjects', subjectRows as never)
+  if (chapterRows.length) await createRows('chapters', chapterRows as never)
+  if (topicRows.length) await createRows('topics', topicRows as never)
+  if (subtopicRows.length) await createRows('subtopics', subtopicRows as never)
+  if (componentRows.length) await createRows('components', componentRows as never)
 }

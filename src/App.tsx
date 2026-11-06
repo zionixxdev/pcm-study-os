@@ -119,7 +119,7 @@ export default function App() {
     <ErrorBoundary>
       <ToastProvider>
         <AppProvider>
-          <BrowserRouter basename={basename}>
+          <BrowserRouter basename={basename} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <Shell />
           </BrowserRouter>
         </AppProvider>
