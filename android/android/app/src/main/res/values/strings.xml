@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PCM Study OS</string>
+    <string name="notif_channel_reminders">Study reminders</string>
+    <string name="notif_channel_reminders_desc">Revision, deadline and daily goal reminders</string>
+    <string name="notif_channel_timer">Focus timer</string>
+    <string name="notif_channel_timer_desc">Shows the running study timer</string>
+    <string name="timer_running">Focus session running</string>
+    <string name="timer_paused">Focus session paused</string>
+    <string name="timer_finished">Focus session complete</string>
+</resources>
