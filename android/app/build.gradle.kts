@@ -143,6 +143,8 @@ dependencies {
     testImplementation("androidx.test.ext:junit:1.2.1")
     testImplementation("androidx.room:room-testing:2.6.1")
     testImplementation("org.json:json:20240303")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Instrumented UI tests (Compose)
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
