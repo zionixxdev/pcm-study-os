@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-bg: 11 15 20;
+  --c-surface: 17 23 31;
+  --c-raised: 23 31 41;
+  --c-line: 38 49 63;
+  --c-ink: 232 238 245;
+  --c-muted: 139 152 168;
+  --c-accent: 79 140 255;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --c-bg: 246 248 251;
+  --c-surface: 255 255 255;
+  --c-raised: 241 245 249;
+  --c-line: 220 227 235;
+  --c-ink: 17 24 33;
+  --c-muted: 100 116 132;
+  color-scheme: light;
+}
+
+html {
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-font='sm'] {
+  font-size: 14px;
+}
+html[data-font='lg'] {
+  font-size: 18px;
+}
+
+body {
+  @apply bg-bg text-ink antialiased;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  overscroll-behavior-y: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--c-line)) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--c-line));
+  border-radius: 999px;
+}
+
+/* Keep tap targets comfortable on 720p Android screens. */
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px; /* prevents iOS/Android zoom on focus */
+}
+
+.katex {
+  font-size: 1.02em;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
