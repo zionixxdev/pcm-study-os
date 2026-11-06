@@ -160,8 +160,10 @@ transaction.
 - `RevisionScheduleTest` — ladder, ratings, next dates, status classification
 - `ImportParserTest` — paste format, CSV (quoted commas), JSON, duplicates, malformed input
 - `StudyStatsTest` / `GradingTest` / `MathFormatTest` — study time, streaks, percentages, notation
-- `DatabaseTest` (Robolectric) — create/read, cascade delete, persistence after reopen,
-  backup/restore round-trip, restore rejection, year isolation
+- `DatabaseTest` (Robolectric, 8 tests) — create/read, cascade delete, persistence after
+  reopen, backup/restore round-trip, restore rejection, year isolation
+- `ComposeUiTest` (Robolectric + Compose test rule, 7 tests) — task row rendering and
+  completion callback, status pills, Markdown note rendering, theme switching, accent colour
 
 ## Low-end device notes
 
@@ -177,9 +179,10 @@ Target: TECNO Pop 7, Android 12 Go, ARMv7, 3 GB RAM, 720×1612.
 
 ## Known limitations
 
-- Screen-level Compose UI tests are written for instrumentation
-  (`androidTest`) but are not run in CI, because the emulator job is slow and
-  flaky on free runners. The unit and Room tests do run.
+- UI tests are component-level (Compose + Robolectric), not full end-to-end screen
+  flows: they render individual composables with real data classes. An emulator-based
+  `androidTest` suite is not wired into CI because those jobs are slow and flaky on
+  free runners.
 - Home-screen widgets are not provided — this is an app, not a widget provider.
 - If you clear app data or uninstall, the local database is gone; export a JSON
   backup first.

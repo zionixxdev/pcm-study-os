@@ -9,6 +9,30 @@ computed from your data.
 
 ---
 
+---
+
+## Native Android app
+
+The `android/` folder holds a complete native port: **Kotlin + Jetpack Compose +
+Material 3**, Room/SQLite, Hilt, Navigation Compose, DataStore and WorkManager.
+
+- Fully offline — the app does not even request the `INTERNET` permission.
+- No accounts, no Supabase, no Firebase, no analytics, no ads.
+- Every feature from the web app is present (see `android/README.md` for the
+  feature-by-feature map).
+- Builds run on GitHub Actions: **Actions → Android build** produces the
+  `PCM-Study-OS-Android-APK` artifact.
+- `minSdk 26`, runs on 32-bit ARMv7 (Android 12 Go included).
+
+```bash
+cd android
+./gradlew :app:assembleDebug      # debug APK
+./gradlew :app:testDebugUnitTest  # 49 unit + Robolectric + Compose tests
+```
+
+The web app below is unchanged and still deployed at
+<https://zionixxdev.github.io/pcm-study-os/>.
+
 ## What it does
 
 | Area | Capabilities |
