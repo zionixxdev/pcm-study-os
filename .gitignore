@@ -4,6 +4,8 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+# .env.production is committed on purpose: it only holds the public anon key.
+!.env.production
 *.local
 .DS_Store
 coverage

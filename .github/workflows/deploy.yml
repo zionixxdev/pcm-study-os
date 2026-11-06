@@ -28,11 +28,10 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      # Supabase config comes from the committed .env.production (public anon key only).
       - name: Build for the project sub-path
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           npm run build
           cp dist/index.html dist/404.html

@@ -22,9 +22,6 @@ jobs:
         run: npm run lint
       - name: Unit tests
         run: npm run test
+      # Supabase config comes from the committed .env.production (public anon key only).
       - name: Production build
         run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
