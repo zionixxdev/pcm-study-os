@@ -81,7 +81,8 @@ class SeederTest {
         seeder.installSyllabus(yearId)
         val subjects = db.subjectDao().forYear(yearId)
         assertEquals(10, subjects.size)
-        assertEquals(2, db.academicYearDao().getAll().size.coerceAtLeast(1))
+        // The second install appends to the same year rather than creating another.
+        assertEquals(1, db.academicYearDao().getAll().size)
         Unit
     }
 }
