@@ -1,6 +1,7 @@
 package dev.zionixx.pcmstudyos.ui
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertIsDisplayed
@@ -81,20 +82,19 @@ class ComposeUiTest {
 
     @Test
     fun `theme switching changes the surface colour`() {
-        var darkSurface: Color? = null
-        var lightSurface: Color? = null
+        val theme = mutableStateOf("dark")
+        var background: Color? = null
 
         composeRule.setContent {
-            PcmTheme(theme = "dark") { Capture { darkSurface = it } }
+            PcmTheme(theme = theme.value) { background = MaterialTheme.colorScheme.background }
         }
         composeRule.waitForIdle()
+        val darkBackground = background
 
-        composeRule.setContent {
-            PcmTheme(theme = "light") { Capture { lightSurface = it } }
-        }
+        theme.value = "light"
         composeRule.waitForIdle()
 
-        assertNotEquals(darkSurface, lightSurface)
+        assertNotEquals(darkBackground, background)
     }
 
     @Test
