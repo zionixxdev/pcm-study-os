@@ -123,7 +123,7 @@ class MathFormatTest {
     fun `replaces common operators and symbols`() {
         assertEquals("a → b", MathFormat.pretty("a -> b"))
         assertEquals("x ≤ 5", MathFormat.pretty("x <= 5"))
-        assertEquals("√x", MathFormat.pretty("\\sqrt{x}"))
+        assertEquals("√(x)", MathFormat.pretty("\\sqrt{x}"))
         assertEquals("3 × 4", MathFormat.pretty("3 * 4"))
         assertEquals("π r²", MathFormat.pretty("\\pi r^2"))
     }

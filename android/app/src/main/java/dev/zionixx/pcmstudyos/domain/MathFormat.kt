@@ -53,6 +53,8 @@ object MathFormat {
             .replace("!=", "≠")
             .replace("*", "×")
 
+        // √{x} reads badly; render it as √(x).
+        text = Regex("""√\{([^}]*)\}""").replace(text) { "√(" + it.groupValues[1] + ")" }
         text = replaceScripts(text, '^', superscripts)
         text = replaceScripts(text, '_', subscripts)
         return text

@@ -105,7 +105,7 @@ class DatabaseTest {
     }
 
     @Test
-    fun `data persists after the database is reopened`() = runBlocking {
+    fun `data persists after the database is reopened`(): Unit = runBlocking {
         val file = java.io.File(context.cacheDir, "persist-test.db")
         file.delete()
         val first = Room.databaseBuilder(context, PcmDatabase::class.java, file.absolutePath)
@@ -122,6 +122,7 @@ class DatabaseTest {
         assertEquals("Class 12 — 2027–28", years.first().name)
         second.close()
         file.delete()
+        Unit
     }
 
     @Test
