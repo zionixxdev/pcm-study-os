@@ -1,14 +1,16 @@
 name: Deploy to GitHub Pages
 
+# The site is served from the `docs/` folder of `main` (Settings → Pages).
+# This workflow rebuilds it and commits the result, so a source change on main
+# goes live without any manual step.
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -16,6 +18,8 @@ concurrency:
 
 jobs:
   build:
+    # Skip the commit this workflow itself creates, so it cannot loop.
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,26 +28,25 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - name: Build
+      - name: Build for the project sub-path
         env:
-          # Project pages are served from /<repo>/ — set this if the repo name changes.
           BASE_PATH: /${{ github.event.repository.name }}/
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           npm run build
           cp dist/index.html dist/404.html
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          rm -rf docs
+          mkdir -p docs
+          cp -r dist/. docs/
+      - name: Commit the built site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A docs
+          if git diff --cached --quiet; then
+            echo "No site changes to publish."
+          else
+            git commit -m "build: publish site to docs/ [skip ci]"
+            git push
+          fi
