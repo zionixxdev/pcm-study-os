@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -9,6 +9,49 @@
     <link rel="icon" type="image/png" href="/pcm-study-os/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/pcm-study-os/icons/icon-192.png" />
     <title>PCM Study OS</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #0b0f14;
+        color: #e8eef5;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      }
+      .boot {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        padding: 24px;
+      }
+      .boot h1 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+      }
+      .boot p {
+        margin: 0;
+        max-width: 34ch;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #8b98a8;
+      }
+      .dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: #4f8cff;
+        color: #fff;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+    </style>
     <script type="module" crossorigin src="/pcm-study-os/assets/index-DTPXdll0.js"></script>
     <link rel="modulepreload" crossorigin href="/pcm-study-os/assets/vendor-6XqOfgen.js">
     <link rel="modulepreload" crossorigin href="/pcm-study-os/assets/pdf-CU495f9Z.js">
@@ -16,6 +59,20 @@
     <link rel="stylesheet" crossorigin href="/pcm-study-os/assets/index-DUTMfd-R.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot">
+        <div class="dot">P</div>
+        <h1>PCM Study OS</h1>
+        <p>Loading your academic workspace…</p>
+      </div>
+    </div>
+    <noscript>
+      <div class="boot">
+        <h1>JavaScript is required</h1>
+        <p>
+          PCM Study OS stores your syllabus and study data in this browser. Enable JavaScript to open the app.
+        </p>
+      </div>
+    </noscript>
   </body>
 </html>
