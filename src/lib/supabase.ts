@@ -23,6 +23,21 @@ export function oauthRedirectUrl(): string {
   return `${window.location.origin}${base}`
 }
 
+/** Asks the project which external providers are enabled, so the UI never
+ * offers a sign-in button that would fail. Returns null when the check cannot
+ * be made (offline, blocked, or an older project). */
+export async function getEnabledProviders(): Promise<{ google: boolean } | null> {
+  if (!url || !anonKey) return null
+  try {
+    const res = await fetch(`${url}/auth/v1/settings`, { headers: { apikey: anonKey } })
+    if (!res.ok) return null
+    const data = (await res.json()) as { external?: Record<string, boolean> }
+    return { google: Boolean(data.external?.google) }
+  } catch {
+    return null
+  }
+}
+
 export async function signInWithGoogle(): Promise<{ error: string | null }> {
   if (!supabase) return { error: 'Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.' }
   const { error } = await supabase.auth.signInWithOAuth({

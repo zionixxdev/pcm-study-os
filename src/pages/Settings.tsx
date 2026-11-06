@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import {
   Bell,
@@ -45,7 +45,7 @@ import {
   validateBackup,
   type BackupFile,
 } from '../lib/export'
-import { supabaseConfigured, deleteCloudAccount } from '../lib/supabase'
+import { supabaseConfigured, deleteCloudAccount, getEnabledProviders } from '../lib/supabase'
 import { formatDate, formatMinutes, todayStr } from '../lib/dates'
 import type { AcademicYear, Priority } from '../types'
 
@@ -70,6 +70,18 @@ export default function SettingsPage() {
   const [backupPreview, setBackupPreview] = useState<{ backup: BackupFile; counts: Record<string, number>; total: number } | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const [notifPermission, setNotifPermission] = useState<string>(typeof Notification !== 'undefined' ? Notification.permission : 'unsupported')
+  const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    if (!supabaseConfigured) return
+    let alive = true
+    void getEnabledProviders().then((providers) => {
+      if (alive && providers) setGoogleEnabled(providers.google)
+    })
+    return () => {
+      alive = false
+    }
+  }, [])
 
   const progress = useMemo(
     () => (data ? buildProgress({ subjects: data.subjects, chapters: data.chapters, topics: data.topics, subtopics: data.subtopics, components: data.components }) : null),
@@ -293,6 +305,16 @@ export default function SettingsPage() {
               <Button variant="secondary" size="sm" onClick={() => void signOutUser()}>
                 <LogOut size={14} /> Sign out
               </Button>
+            ) : googleEnabled === false ? (
+              <div className="rounded-lg border border-line bg-raised p-2.5 text-[11px] text-muted">
+                <p className="font-medium text-ink">Google sign-in is not enabled yet</p>
+                <p className="mt-1">
+                  Enable it in Supabase → Authentication → Providers → Google, then add the OAuth client ID and secret
+                  from Google Cloud Console. Redirect URI:{' '}
+                  <code className="break-all">https://&lt;project-ref&gt;.supabase.co/auth/v1/callback</code>
+                </p>
+                <p className="mt-1">Until then the app runs in local-only mode — nothing is lost, nothing is uploaded.</p>
+              </div>
             ) : (
               <Button
                 size="sm"
